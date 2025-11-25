@@ -1,106 +1,40 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <title>Insecure - Simple Notes App</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 2rem auto; line-height: 1.6; }
-    header { border-bottom: 1px solid #ddd; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-    nav a { margin-right: 1rem; }
-    .danger { color: #b20000; font-weight: bold; }
-    .notes { margin-top: 1rem; }
-    footer { margin-top: 2rem; font-size: 0.9rem; color: #555; }
-    .hint { background:#fff3cd; border:1px solid #ffeeba; padding:8px; border-radius:4px; }
-  </style>
-
-  </head>
+    <title>Insecure Notes App</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
 <body>
-  <header>
-    <h1>Simple Notes — <span class="danger">INSECURE</span> Branch</h1>
+    <h1>Insecure Notes App</h1>
+
     <nav>
-      <a href="/register">Register</a>
-      <a href="/login">Login</a>
-      <a href="/notes">Your Notes</a>
-      <a href="/search?q=hello">Sample search (reflected)</a>
+        <a href="/register">Register</a>
+        <a href="/login">Login</a>
+        <a href="/notes">Notes</a>
+        <a href="/search?q=test">Search Demo</a>
     </nav>
-  </header>
 
-  <section>
-    <p>
-      This is my <strong>insecure</strong> page for the demo app. It shows vulnerabilities as asked
-    </p>
+    <h2>Welcome</h2>
+    <p>This is the insecure version of the app. Vulnerabilities include:</p>
 
-    <div class="hint">
-      <strong>Assignment brief:</strong>
-      <a href="file:///mnt/data/BSHCYB4-Secure-Application-Programming-Project (3).docx">
-      </a>
-    </div>
-
-    <h2>Quick demo actions</h2>
     <ul>
-      <li>Register user (<code>/register</code>), then log in (<code>/login</code>).</li>
-      <li>Post notes at <code>/notes</code>. Notes are stored unsanitised in this branch.</li>
-      <li>Try the search box below to show reflected/DOM XSS in my insecure branch.</li>
+        <li>SQL Injection</li>
+        <li>Stored XSS</li>
+        <li>Reflected XSS</li>
+        <li>DOM XSS</li>
+        <li>Sensitive Data Exposure</li>
     </ul>
 
-    <h3>Reflected and DOM XSS demo</h3>
-    <p>
-      Enter a search term then click <strong>Search</strong>. In my insecure branch, the query parameter is echoed
-      back to the page *without* escaping, which can cause script execution.
-    </p>
+    <h3>DOM XSS example</h3>
+    <div id="output"></div>
 
-    <form method="get" action="/search" id="searchForm">
-      <input type="text" name="q" placeholder="Search..." />
-      <button type="submit">Search</button>
-    </form>
-
-    <div class="notes">
-      <h4>Immediate DOM XSS example (unsafe echo)</h4>
-      <p>
-        The code below **reads** the `q` parameter from the URL and writes it back into the page using
-        <code>innerHTML</code> —  intentionally insecure and demonstrates DOM-based XSS.
-      </p>
-      
-      <div id="vulnerable-output"></div>
-
-      <script>
-        (function() {
-          // parse the querystring to get ?q=
-          const params = new URLSearchParams(window.location.search);
-          const q = params.get('q');
-
-          if (q) {
-            // UNSAFE: inserting raw user input into innerHTML (DOM XSS)
-            document.getElementById('vulnerable-output').innerHTML =
-              '<strong>Search term (raw):</strong> ' + q;
-          } else {
-            document.getElementById('vulnerable-output').innerHTML =
-              '<em>No search term provided. Try ?q=&lt;script&gt;alert(1)&lt;/script&gt;</em>';
-          }
-        })();
-      </script>
-
-      </div>
-
-    <hr />
-
-    <section>
-      <h3>Notes on vulnerabilities in this branch</h3>
-      <ul>
-        <li><strong>SQL Injection</strong> — build SQL using string concatenation.</li>
-        <li><strong>Stored XSS</strong> — notes are saved without sanitisation and rendered back to users.</li>
-        <li><strong>Reflected XSS</strong> — the server echoes query parameters directly into responses in routes.</li>
-        <li><strong>Sensitive Data Exposure</strong> — plaintext password storage and hard-coded secrets exist here.</li>
-      </ul>
-    </section>
-  </section>
-
-  <footer>
-    <p>
-      This file intentionally contains insecure patterns. The <strong>secure</strong> branch contains
-      corrected code and explanations of the fixes.
-    </p>
-  </footer>
+    <script>
+        // DOM XSS — UNSAFE
+        const params = new URLSearchParams(window.location.search);
+        const q = params.get("q");
+        if (q) {
+            document.getElementById("output").innerHTML = "<strong>You searched:</strong> " + q;
+        }
+    </script>
 </body>
 </html>
