@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, session
 import sqlite3
 
 app = Flask(__name__)
-app.secrret_key ="123" #hard coded secret, sensitive data exposure
+app.secret_key ="123" #hard coded secret, sensitive data exposure
 
 def get_db():
     return sqlite3.connect("insecure.db")
@@ -19,7 +19,7 @@ def login():
         password = request.form["password"]
 
         #sql injection (vulnerability)
-        query = f"SELECT * FROM users WHERE username='{username}'AND password={password}'"
+        query = f"SELECT * FROM users WHERE username='{username}'AND password='{password}'"
         user = get_db().execute(query).fetchone()
 
         if user:
@@ -43,7 +43,7 @@ def register():
 
 #insecure notes stored in XSS
 @app.route('/notes', methods=['GET','POST'])
-def noyes():
+def notes():
     if "user" not in session:
         return redirect("/login")
     
