@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px;
+    background: #900;
+    color: white;
+    border: none;
+}
+
+button:hover {
+    background: #600;
+}
+
+nav a {
+    margin-right: 10px;
+}
