@@ -1,5 +1,21 @@
+# Python cache
 __pycache__/
-*.db
 *.pyc
+*.pyo
+
+# Environment
+venv/
 .env
-app.log 
+
+# Databases
+*.db
+
+# Logs
+app.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
