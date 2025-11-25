@@ -2,6 +2,7 @@ import logging
 from flask import Flask, request, render_template, redirect, session
 import sqlite3
 import os
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", os.urandom(24))
