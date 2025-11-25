@@ -1,12 +1,23 @@
-<h1>Your Notes</h1>
+<!doctype html>
+<html>
+<head>
+    <title>Your Notes (Insecure)</title>
+</head>
+<body>
+    <h1>Your Notes</h1>
 
-<form method="post">
-    <textarea name="note"></textarea>
-    <button type="submit">Add Note</button>
-</form>
+    <form method="post">
+        <textarea name="note"></textarea>
+        <button type="submit">Add Note</button>
+    </form>
 
-<ul>
-    {% for n in notes %}
-        <li>{{ n[0] }}</li>
-    {% endfor %}
-</ul>
+    <ul>
+        {% for n in notes %}
+            <!-- Stored XSS: output raw note text -->
+            <li>{{ n[0] | safe }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/">Home</a>
+</body>
+</html>
