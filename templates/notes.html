@@ -1,0 +1,12 @@
+<h1>Your Notes</h1>
+
+<form method="post">
+    <textarea name="note"></textarea>
+    <button type="submit">Add Note</button>
+</form>
+
+<ul>
+    {% for n in notes %}
+        <li>{{ n[0] }}</li>
+    {% endfor %}
+</ul>
