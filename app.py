@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, session
+from flask import Flask, request, render_template, redirect, session, url_for
 import sqlite3
 
 app = Flask(__name__)
@@ -29,7 +29,7 @@ def login():
     return render_template("login.html")
 
 #insecure registration
-@app.route('/register', methods=['GET','POST'])
+@app.route('Insecure-Secure/templates/register', methods=['GET','POST'])
 def register():
     if request.method == 'POST':
         username = request.form["username"]
