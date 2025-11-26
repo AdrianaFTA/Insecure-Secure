@@ -18,8 +18,8 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        #sql injection (vulnerability)
-        query = f"SELECT * FROM users WHERE username='{username}'AND password='{password}'"
+        #sql query injection
+        query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
         user = get_db().execute(query).fetchone()
 
         if user:
@@ -29,7 +29,7 @@ def login():
     return render_template("login.html")
 
 #insecure registration
-@app.route('Insecure-Secure/templates/register', methods=['GET','POST'])
+@app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == 'POST':
         username = request.form["username"]
