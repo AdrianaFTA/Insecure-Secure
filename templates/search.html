@@ -1,18 +1,16 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-    <title>Search</title>
+    <title>Search (Insecure)</title>
 </head>
 <body>
-    <h1>Insecure Search Page</h1>
+
+    <h1>Insecure Search</h1>
 
     <p>You searched for: {{ q|safe }}</p>
 
-    <p>
-        Try injecting:  
-        <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code>
-    </p>
+    <br>
+    <a href="/">Back to Main Page</a>
 
-    <a href="/">Back to home</a>
 </body>
 </html>
