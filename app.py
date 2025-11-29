@@ -56,9 +56,43 @@ def notes():
         db.execute("INSERT INTO notes (username, note) VALUES (?,?)", (session["user"], note))
         db.commit()
 
-    notes = db.execute("SELECT note FROM notes WHERE username=?", (session["user"],)).fetchall()
+    notes = db.execute("SELECT id, note FROM notes WHERE username=?", (session["user"],)).fetchall()
 
     return render_template("notes.html", notes=notes)
+
+#edit
+@app.route('/edit/<int:note_id>', methods=['GET', 'POST'])
+def edit(note_id):
+    db = get_db()
+
+    if request.method == 'POST':
+        new_note = request.form["note"]
+        db.execute("UPDATE notes SET note=? WHERE id=?", (new_note, note_id))
+        db.commit()
+        return redirect("/notes")
+
+    # Fetch the note
+    row = db.execute("SELECT id, note FROM notes WHERE id=?", (note_id,)).fetchone()
+
+    if row is None:
+        return "Note not found", 404
+
+    note = row[1]  # row = (id, note)
+
+    return render_template("edit.html", note=note)
+#delete
+@app.route('/delete/<int:note_id>')
+def delete_note(note_id):
+    db = get_db()
+    db.execute("DELETE FROM notes WHERE id=?", (note_id,))
+    db.commit()
+    return redirect("/notes")
+
+#logout
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect("/")
 
 # reflected XSS
 @app.route('/search')

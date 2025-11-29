@@ -6,7 +6,7 @@
 <body>
     <h1>Your Notes</h1>
 
-    <!-- Logout -->
+    <!-- Logout button -->
     <a href="/logout">Logout</a>
 
     <h3>Add Note</h3>
@@ -19,12 +19,8 @@
     <ul>
         {% for n in notes %}
             <li>
-                {{ n[1] }}  <!-- n[1] is the note text -->
-
-                <!-- Edit button -->
+                {{ n[1] }} 
                 <a href="/edit/{{ n[0] }}">Edit</a>
-
-                <!-- Delete button -->
                 <a href="/delete/{{ n[0] }}">Delete</a>
             </li>
         {% endfor %}
