@@ -7,9 +7,13 @@
 
     <h1>Insecure Search</h1>
 
+    <!-- Reflected XSS vulnerability -->
     <p>You searched for: {{ q|safe }}</p>
 
-    <br>
+    <p>Try an XSS payload:</p>
+    <code>&lt;script&gt;alert("XSS")&lt;/script&gt;</code>
+
+    <br><br>
     <a href="/">Back to Main Page</a>
 
 </body>
