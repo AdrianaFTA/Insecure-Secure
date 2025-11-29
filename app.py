@@ -1,17 +1,19 @@
-import logging
+import bcrypt
 from flask import Flask, request, render_template, redirect, session
 import sqlite3
 import os
-from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+
+#load enviroment variables
+load_dotenv
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", os.urandom(24))
+app.secret_key = os.getenv("SECRET_KEY", "fallback_secret_key")
 
-logging.basicConfig(filename="app.log", level=logging.INFO)
 
 
 def get_db():
-    return sqlite3.connect("secure.db")
+    return sqlite3.connect("secure.db", check_same_thread=False)
 
 @app.route('/')
 def index():
@@ -26,16 +28,15 @@ def login():
 
         #Secure is parameterised query
         db = get_db()
-        user = db.execute("SELECT password FROM users WHERE username=?",(username,)).fetchone()
+        user = db.execute("SELECT username, password FROM users WHERE username=?",
+                          (username,)).fetchone()
 
 
-        if user and check_password_hash(user[0], password):
+        if user and bcrypt.checkpw(password.encode(), user[1]):
             session["user"] = username
-            logging.info(f"User logged in: {username}")
             return redirect("/notes")
         
-        logging.warning(f"Failed login attempt for {username}")
-        return "Invalid credentials"
+        return "Invalid Login"
     
     return render_template("login.html")
 
@@ -46,18 +47,18 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
 
-        hashed = generate_password_hash(password)
+        #hash the password securely
+
+        hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
         db = get_db()
-        db.execute("INSERT INTO users (username, password)VALUES (?,?)", (username, hashed))
+        db.execute("INSERT INTO users (username, password)VALUES (?,?)", (username, hashed_pw))
         db.commit()
-
-        logging.info(f"New user registered: {username}")
 
         return redirect("/login")
     return render_template("register.html")
 
-#secure notes stored in XSS
+#secure notes, no XSS
 @app.route('/notes', methods=['GET','POST'])
 def notes():
     if "user" not in session:
@@ -67,13 +68,43 @@ def notes():
     if request.method =='POST':
         note = request.form["note"]
 
+        #stored safley with JINJA ESCAPES
         db.execute("INSERT INTO notes (username, note) VALUES(?,?)", (session["user"], note))
         db.commit()
-        logging.info(f"Note added for user: {session['user']}")
+        
 
     notes = db.execute("SELECT note FROM notes WHERE username=?",(session["user"],)).fetchall()
 
     return render_template("notes.html", notes=notes)
+
+#edit note secure 
+@app.route("/edit/<int:note_id>", methods=["GET","POST"])
+def edit(note_id):
+    if "user" not in session:
+        return redirect("/login")
+    
+    db = get_db()
+
+    if request.method == "POST":
+        updated_note = request.form["note"]
+        db.execute("UPDATE notes SET note=? WHERE id=?",(updated_note, note_id))
+        db.commit()
+        return redirect("/notes")
+    
+    row = db.execute("SELECT note FROM notes WHERE id=?", (note_id,)).fetchone()
+    return render_template("edit.html", note=row[0])
+
+# delete notes secure 
+@app.route("/delete/<int:note_id>")
+def delete(note_id):
+    if "user" not in session:
+        return redirect("/login")
+    
+    db = get_db()
+    db.execute("DELETE FROM notes WHERE id=?", (note_id))
+    db.commit()
+
+    return redirect("/notes")
 
 # fixed reflected XSS
 @app.route('/search')
@@ -82,6 +113,13 @@ def search():
 
     #safe rendering
     return render_template("search.html", q=q)
+
+#secure logout
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
 
 if __name__=="__main__":
     app.run(debug=True)
