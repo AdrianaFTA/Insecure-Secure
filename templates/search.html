@@ -1,14 +1,29 @@
 <!doctype html>
 <html>
 <head>
-    <title>Search (Secure)</title>
+    <title>Insecure Search</title>
 </head>
 <body>
-    <h1>Search Results</h1>
 
-    
-    <p>You searched for: {{ q }}</p>
+<h1>Search Notes (Insecure)</h1>
 
-    <a href="/">Home</a>
+<form method="get">
+    <input name="q" placeholder="Search..." value="{{ q }}">
+    <button type="submit">Search</button>
+</form>
+
+<h3>Results for: {{ q|safe }}</h3>  <!-- Reflected XSS -->
+
+<ul>
+    {% for n in results %}
+        <li>{{ n[0]|safe }}</li>   <!-- Stored XSS -->
+    {% endfor %}
+</ul>
+
+<br>
+<a href="/">Back to Main Page</a>
+<br>
+<a href="/notes">Back to Notes</a>
+
 </body>
 </html>
