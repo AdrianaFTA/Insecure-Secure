@@ -97,10 +97,19 @@ def logout():
 # reflected XSS
 @app.route('/search')
 def search():
+    if "user" not in session:
+        return redirect("login")
+    
     q = request.args.get("q","")
+    db = get_db()
 
-    #output with no sanitisation
-    return f"<h1>You searched for : {q}</h1>"
+
+    #sql injection is intentional
+    query = f"SELECT note FROM notes WHERE username='{session['user']}' AND note LIKE '%{q}%'"
+    results = db.execute(query).fetchall()
+
+    #reflected XSS
+    return render_template("search.html", q=q, results=results)
 
 if __name__ == "__main__":
     app.run(debug=True)
