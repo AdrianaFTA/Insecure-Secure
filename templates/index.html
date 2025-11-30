@@ -2,6 +2,12 @@
 <html>
 <head>
     <title>Secure Notes App</title>
+
+    {% if request.args.get("logout") %}
+        <p style="color: greenyellow; font-weight: bold;">
+            You have successfully been logged out!
+        </p>
+        {% endif %}
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
