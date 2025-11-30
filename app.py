@@ -92,6 +92,9 @@ def edit(note_id):
         return redirect("/notes")
     
     row = db.execute("SELECT note FROM notes WHERE id=?", (note_id,)).fetchone()
+    if row is None:
+        return "Note not found"
+    
     return render_template("edit.html", note=row[0])
 
 # delete notes secure 
@@ -101,7 +104,7 @@ def delete(note_id):
         return redirect("/login")
     
     db = get_db()
-    db.execute("DELETE FROM notes WHERE id=?", (note_id))
+    db.execute("DELETE FROM notes WHERE id=?", (note_id,))
     db.commit()
 
     return redirect("/notes")
@@ -118,7 +121,7 @@ def search():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect("/")
+    return redirect("/?logout=1")
 
 
 if __name__=="__main__":

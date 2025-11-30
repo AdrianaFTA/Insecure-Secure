@@ -1,31 +1,30 @@
 <!doctype html>
 <html>
 <head>
-    <title>Your Notes (Secure)</title>
+    <title>Your Notes</title>
 </head>
 <body>
-    <h1>Your Notes</h1>
-    <a href="/logout">logout</a>
 
-    <h2>ADD NOTES</h2>
+    <h1>Your Notes</h1>
+
+    <a href="/logout">Logout</a>
+
+    <h3>Add a Note</h3>
     <form method="post">
         <textarea name="note" required></textarea>
         <button type="submit">Add Note</button>
     </form>
 
-    <h3>YOUR NOTES</h3>
-
+    <h3>Your Notes</h3>
     <ul>
         {% for n in notes %}
-            <!-- Safe output: autoescaped by Jinja -->
             <li>
-                {{ n[0] }}
-                <a href= "/edit/{{ n[0] }}">Edit</a>
-                <a href= "/delete/{{ n[0] }}">Delete</a>
+                {{ n[1] }}
+                <a href="/edit/{{ n[0] }}">Edit</a>
+                <a href="/delete/{{ n[0] }}">Delete</a>
             </li>
         {% endfor %}
     </ul>
 
-    <a href="/">Home</a>
 </body>
 </html>
