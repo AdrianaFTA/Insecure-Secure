@@ -26,15 +26,21 @@
     </ul>
 
     <h3>DOM XSS example</h3>
-    <div id="output"></div>
+    
+    <div id="result"></div>
 
     <script>
-        // DOM XSS — UNSAFE
-        const params = new URLSearchParams(window.location.search);
-        const q = params.get("q");
-        if (q) {
-            document.getElementById("output").innerHTML = "<strong>You searched:</strong> " + q;
-        }
+      //DOM XSS vulnerability: directly injecting user input into the DOM
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+
+    if (q) {
+        // Dangerous: innerHTML allows script execution
+        document.getElementById("result").innerHTML = "You searched: " + q;
+    }  
     </script>
+    <p>Try entering this into the URL:</p>
+    <code>?q=&lt;img src=x onerror=alert('DOM XSS')&gt;</code>
+
 </body>
 </html>
