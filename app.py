@@ -112,10 +112,19 @@ def delete(note_id):
 # fixed reflected XSS
 @app.route('/search')
 def search():
+    if "user" not in session:
+        return redirect("/login")
+    
     q = request.args.get("q","")
 
-    #safe rendering
-    return render_template("search.html", q=q)
+    db = get_db()
+
+    #safe sql injection
+    results = db.execute(
+        "SELECT note FROM notes WHERE username=? AND note LIKE ?",(session["user"], f"%{q}%")).fetchall()
+    
+    
+    return render_template("search.html", q=q, results=results)
 
 #secure logout
 @app.route("/logout")
