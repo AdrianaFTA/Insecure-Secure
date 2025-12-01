@@ -122,7 +122,7 @@ def search():
 
     #safe sql injection
     results = db.execute(
-        "SELECT note FROM notes WHERE username=? AND note LIKE ?",(session["user"], f"%{q}%")).fetchall()
+        "SELECT id, note FROM notes WHERE username=? AND note LIKE ?",(session["user"], f"%{q}%")).fetchall()
     
     
     return render_template("search.html", q=q, results=results)
