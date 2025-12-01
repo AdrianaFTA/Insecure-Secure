@@ -105,6 +105,7 @@ def delete(note_id):
     
     db = get_db()
     db.execute("DELETE FROM notes WHERE id=?", (note_id,))
+    
     db.commit()
 
     return redirect("/notes")
