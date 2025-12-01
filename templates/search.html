@@ -16,7 +16,11 @@
 
 <ul>
     {% for n in results %}
-        <li>{{ n[0] }}</li>  <!-- Safe: Jinja escapes HTML -->
+        <li>
+            {{ n[1] }}   <!-- n[1] = note text -->
+            <a href="/edit/{{ n[0] }}">Edit</a>
+            <a href="/delete/{{ n[0] }}">Delete</a>
+        </li>
     {% endfor %}
 </ul>
 
