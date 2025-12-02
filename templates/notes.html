@@ -9,6 +9,12 @@
 
     <a href="/logout">Logout</a>
 
+    {% if request.args.get("undo_available") %}
+    <p style="color: green; font-weight: bold;">
+        Note deleted. <a href="/undo">Undo?</a>
+    </p>
+{% endif %}
+
     <h3>Add a Note</h3>
     <form method="post">
         <textarea name="note" required></textarea>

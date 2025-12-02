@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 
 #load enviroment variables
-load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "fallback_secret_key")
@@ -104,10 +104,33 @@ def delete(note_id):
         return redirect("/login")
     
     db = get_db()
-    db.execute("DELETE FROM notes WHERE id=?", (note_id,))
+    row = db.execute("SELECT id, username, note FROM notes WHERE id=?", (note_id,)).fetchone()
+
+    if row is None:
+        return redirect("/notes")
+    
+    session["deleted_note"] = {
+        "username": row[1]
+        "note": row [2]
+    }
+
+    db.execute("DELETE FROM notes WHERE id=?", (note_id))
+
     
     db.commit()
 
+    return redirect("/notes?undo_available=1")
+
+@app.route("/undo")
+def undo_delete():
+    if "user" not in session:
+        return redirect("/notes")
+    
+    db = get_db()
+    db.execute("INSERT INTO notes (username, note) VALUES(?, ?)", (deleted["username"], deleted["note"]))
+    db.commit()
+
+    session.pop("deleted_note", None)
     return redirect("/notes")
 
 # fixed reflected XSS
