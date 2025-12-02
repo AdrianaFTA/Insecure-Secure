@@ -110,13 +110,11 @@ def delete(note_id):
         return redirect("/notes")
     
     session["deleted_note"] = {
-        "username": row[1]
-        "note": row [2]
+        "username": row[1] ,
+        "note": row[2]
     }
-
-    db.execute("DELETE FROM notes WHERE id=?", (note_id))
-
     
+    db.execute("DELETE FROM notes WHERE id=?", (note_id,))
     db.commit()
 
     return redirect("/notes?undo_available=1")
@@ -124,7 +122,14 @@ def delete(note_id):
 @app.route("/undo")
 def undo_delete():
     if "user" not in session:
+        return redirect("/login")
+    
+    deleted = session.get("deleted_note")
+    
+   
+    if not deleted:
         return redirect("/notes")
+    
     
     db = get_db()
     db.execute("INSERT INTO notes (username, note) VALUES(?, ?)", (deleted["username"], deleted["note"]))
