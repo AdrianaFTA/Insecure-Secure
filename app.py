@@ -73,7 +73,7 @@ def notes():
         db.commit()
         
 
-    notes = db.execute("SELECT note FROM notes WHERE username=?",(session["user"],)).fetchall()
+    notes = db.execute("SELECT id, note FROM notes WHERE username=?", (session["user"],)).fetchall()
 
     return render_template("notes.html", notes=notes)
 
