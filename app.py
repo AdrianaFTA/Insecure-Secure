@@ -97,17 +97,12 @@ def logout():
 # reflected XSS
 @app.route('/search')
 def search():
+    q = request.args.get("q", "")
+
+    # REFLECTED XSS VULNERABILITY
+    return f"<h1>You searched for: {q}</h1>"
     
-    q = request.args.get("q","")
-    db = get_db()
-
-
-    #sql injection is intentional
-    query = f"SELECT note FROM notes WHERE username='{session['user']}' AND note LIKE '%{q}%'"
-    results = db.execute(query).fetchall()
-
-    #reflected XSS
-    return render_template("search.html", q=q, results=results)
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
