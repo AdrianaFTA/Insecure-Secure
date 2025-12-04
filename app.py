@@ -97,8 +97,6 @@ def logout():
 # reflected XSS
 @app.route('/search')
 def search():
-    if "user" not in session:
-        return redirect("login")
     
     q = request.args.get("q","")
     db = get_db()
