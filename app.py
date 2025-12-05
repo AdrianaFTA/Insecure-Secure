@@ -4,45 +4,41 @@ from flask import Flask, request, render_template, redirect, session
 import sqlite3
 import os
 from dotenv import load_dotenv
-from flask_talisman import Talisman
 
-# --------------------------
-# Load environment variables
-# --------------------------
+
+
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "fallback_secret_key")
 
-# Apply security headers (CSP, HSTS, etc.)
-Talisman(app)
 
-# --------------------------
+
+
 # Logging
-# --------------------------
+
 logging.basicConfig(
     filename='secure.log',
     level=logging.INFO,
     format="%(asctime)s %(levelname)s: %(message)s"
 )
 
-# --------------------------
+
 # Database helper
-# --------------------------
+
 def get_db():
     return sqlite3.connect("secure.db", check_same_thread=False)
 
-# --------------------------
 # Index page
-# --------------------------
+
 @app.route('/')
 def index():
     logout_msg = request.args.get("logout")
     return render_template("index.html", logout_msg=logout_msg)
 
-# --------------------------
+
 # Secure Login
-# --------------------------
+
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
